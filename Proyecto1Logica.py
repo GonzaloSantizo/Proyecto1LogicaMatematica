@@ -89,7 +89,7 @@ def analizar_expresion(expresion):
 
 # Función para dibujar el grafo
 def dibujar_grafo(G):
-    pos = nx.spring_layout(G)
+    pos = nx.nx_agraph.graphviz_layout(grafo, prog="dot")
     labels = nx.get_node_attributes(G, 'label')  # Get the labels from the 'label' attribute
 
     # Extract node labels and set the label to an empty string for nodes without labels
@@ -104,7 +104,7 @@ def dibujar_grafo(G):
         with_labels=True,
         labels=node_labels,
         node_size=2000,
-        node_color="blue",
+        node_color="lightblue",
         font_size=10,
         font_weight='bold',
         arrowsize=20,
@@ -116,6 +116,6 @@ def dibujar_grafo(G):
     plt.show()  # Show the graph without creating an extra figure
 
 # Ejemplo de uso
-expresion_logica = '~~~q'
+expresion_logica = '((p=>q)^p)'
 grafo = analizar_expresion(expresion_logica)
 dibujar_grafo(grafo)
