@@ -10,23 +10,22 @@ Rule 4     expression -> expression OR expression
 Rule 5     expression -> expression IMPLIES expression
 Rule 6     expression -> expression IFF expression
 Rule 7     expression -> LPAREN expression RPAREN
-Rule 8     expression -> NOT LPAREN expression RPAREN
 
 Terminals, with rules where they appear
 
 AND                  : 3
 IFF                  : 6
 IMPLIES              : 5
-LPAREN               : 7 8
-NOT                  : 2 8
+LPAREN               : 7
+NOT                  : 2
 OR                   : 4
-RPAREN               : 7 8
+RPAREN               : 7
 VARIABLE             : 1
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 2 3 3 4 4 5 5 6 6 7 8 0
+expression           : 2 3 3 4 4 5 5 6 6 7 0
 
 Parsing method: LALR
 
@@ -40,7 +39,6 @@ state 0
     (5) expression -> . expression IMPLIES expression
     (6) expression -> . expression IFF expression
     (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
 
     VARIABLE        shift and go to state 2
     NOT             shift and go to state 3
@@ -77,7 +75,6 @@ state 2
 state 3
 
     (2) expression -> NOT . expression
-    (8) expression -> NOT . LPAREN expression RPAREN
     (1) expression -> . VARIABLE
     (2) expression -> . NOT expression
     (3) expression -> . expression AND expression
@@ -85,11 +82,10 @@ state 3
     (5) expression -> . expression IMPLIES expression
     (6) expression -> . expression IFF expression
     (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
 
-    LPAREN          shift and go to state 10
     VARIABLE        shift and go to state 2
     NOT             shift and go to state 3
+    LPAREN          shift and go to state 4
 
     expression                     shift and go to state 9
 
@@ -103,13 +99,12 @@ state 4
     (5) expression -> . expression IMPLIES expression
     (6) expression -> . expression IFF expression
     (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
 
     VARIABLE        shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
 
-    expression                     shift and go to state 11
+    expression                     shift and go to state 10
 
 state 5
 
@@ -121,13 +116,12 @@ state 5
     (5) expression -> . expression IMPLIES expression
     (6) expression -> . expression IFF expression
     (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
 
     VARIABLE        shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
 
-    expression                     shift and go to state 12
+    expression                     shift and go to state 11
 
 state 6
 
@@ -139,13 +133,12 @@ state 6
     (5) expression -> . expression IMPLIES expression
     (6) expression -> . expression IFF expression
     (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
 
     VARIABLE        shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
 
-    expression                     shift and go to state 13
+    expression                     shift and go to state 12
 
 state 7
 
@@ -157,13 +150,12 @@ state 7
     (5) expression -> . expression IMPLIES expression
     (6) expression -> . expression IFF expression
     (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
 
     VARIABLE        shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
 
-    expression                     shift and go to state 14
+    expression                     shift and go to state 13
 
 state 8
 
@@ -175,13 +167,12 @@ state 8
     (5) expression -> . expression IMPLIES expression
     (6) expression -> . expression IFF expression
     (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
 
     VARIABLE        shift and go to state 2
     NOT             shift and go to state 3
     LPAREN          shift and go to state 4
 
-    expression                     shift and go to state 15
+    expression                     shift and go to state 14
 
 state 9
 
@@ -206,39 +197,20 @@ state 9
 
 state 10
 
-    (8) expression -> NOT LPAREN . expression RPAREN
-    (7) expression -> LPAREN . expression RPAREN
-    (1) expression -> . VARIABLE
-    (2) expression -> . NOT expression
-    (3) expression -> . expression AND expression
-    (4) expression -> . expression OR expression
-    (5) expression -> . expression IMPLIES expression
-    (6) expression -> . expression IFF expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . NOT LPAREN expression RPAREN
-
-    VARIABLE        shift and go to state 2
-    NOT             shift and go to state 3
-    LPAREN          shift and go to state 4
-
-    expression                     shift and go to state 16
-
-state 11
-
     (7) expression -> LPAREN expression . RPAREN
     (3) expression -> expression . AND expression
     (4) expression -> expression . OR expression
     (5) expression -> expression . IMPLIES expression
     (6) expression -> expression . IFF expression
 
-    RPAREN          shift and go to state 17
+    RPAREN          shift and go to state 15
     AND             shift and go to state 5
     OR              shift and go to state 6
     IMPLIES         shift and go to state 7
     IFF             shift and go to state 8
 
 
-state 12
+state 11
 
     (3) expression -> expression AND expression .
     (3) expression -> expression . AND expression
@@ -259,7 +231,7 @@ state 12
   ! IFF             [ shift and go to state 8 ]
 
 
-state 13
+state 12
 
     (4) expression -> expression OR expression .
     (3) expression -> expression . AND expression
@@ -280,7 +252,7 @@ state 13
   ! IFF             [ shift and go to state 8 ]
 
 
-state 14
+state 13
 
     (5) expression -> expression IMPLIES expression .
     (3) expression -> expression . AND expression
@@ -301,7 +273,7 @@ state 14
   ! IFF             [ shift and go to state 8 ]
 
 
-state 15
+state 14
 
     (6) expression -> expression IFF expression .
     (3) expression -> expression . AND expression
@@ -322,23 +294,7 @@ state 15
   ! IFF             [ shift and go to state 8 ]
 
 
-state 16
-
-    (8) expression -> NOT LPAREN expression . RPAREN
-    (7) expression -> LPAREN expression . RPAREN
-    (3) expression -> expression . AND expression
-    (4) expression -> expression . OR expression
-    (5) expression -> expression . IMPLIES expression
-    (6) expression -> expression . IFF expression
-
-    RPAREN          shift and go to state 18
-    AND             shift and go to state 5
-    OR              shift and go to state 6
-    IMPLIES         shift and go to state 7
-    IFF             shift and go to state 8
-
-
-state 17
+state 15
 
     (7) expression -> LPAREN expression RPAREN .
 
@@ -349,35 +305,3 @@ state 17
     $end            reduce using rule 7 (expression -> LPAREN expression RPAREN .)
     RPAREN          reduce using rule 7 (expression -> LPAREN expression RPAREN .)
 
-
-state 18
-
-    (8) expression -> NOT LPAREN expression RPAREN .
-    (7) expression -> LPAREN expression RPAREN .
-
-  ! reduce/reduce conflict for AND resolved using rule 7 (expression -> LPAREN expression RPAREN .)
-  ! reduce/reduce conflict for OR resolved using rule 7 (expression -> LPAREN expression RPAREN .)
-  ! reduce/reduce conflict for IMPLIES resolved using rule 7 (expression -> LPAREN expression RPAREN .)
-  ! reduce/reduce conflict for IFF resolved using rule 7 (expression -> LPAREN expression RPAREN .)
-  ! reduce/reduce conflict for $end resolved using rule 7 (expression -> LPAREN expression RPAREN .)
-  ! reduce/reduce conflict for RPAREN resolved using rule 7 (expression -> LPAREN expression RPAREN .)
-    AND             reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    OR              reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    IMPLIES         reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    IFF             reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    $end            reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-
-  ! AND             [ reduce using rule 8 (expression -> NOT LPAREN expression RPAREN .) ]
-  ! OR              [ reduce using rule 8 (expression -> NOT LPAREN expression RPAREN .) ]
-  ! IMPLIES         [ reduce using rule 8 (expression -> NOT LPAREN expression RPAREN .) ]
-  ! IFF             [ reduce using rule 8 (expression -> NOT LPAREN expression RPAREN .) ]
-  ! $end            [ reduce using rule 8 (expression -> NOT LPAREN expression RPAREN .) ]
-  ! RPAREN          [ reduce using rule 8 (expression -> NOT LPAREN expression RPAREN .) ]
-
-WARNING: 
-WARNING: Conflicts:
-WARNING: 
-WARNING: reduce/reduce conflict in state 18 resolved using rule (expression -> LPAREN expression RPAREN)
-WARNING: rejected rule (expression -> NOT LPAREN expression RPAREN) in state 18
-WARNING: Rule (expression -> NOT LPAREN expression RPAREN) is never reduced

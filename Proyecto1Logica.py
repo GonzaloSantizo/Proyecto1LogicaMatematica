@@ -35,37 +35,40 @@ def p_expression(p):
                   | expression OR expression
                   | expression IMPLIES expression
                   | expression IFF expression
-                  | LPAREN expression RPAREN
-                  | NOT LPAREN expression RPAREN'''
+                  | LPAREN expression RPAREN'''
     global counter
 
-    if len(p) == 2:  # si la longitud de p es 2, entonces estamos mirando una variable o una negación
-        if isinstance(p[1], str):  # si es una variable
+    if len(p) == 2:  # if the length of p is 2, then we are looking at a variable or a negation
+        if isinstance(p[1], str):  # if it is a variable
             node_id = f'{p[1]}_{counter}'
             G.add_node(node_id, label=p[1])
             counter += 1
             p[0] = node_id
-        else:  # si es una negación
+        else:  # if it is a negation
             p[0] = p[1]
-    elif len(p) == 3:  # estamos mirando una negación
+    elif len(p) == 3:  # we are looking at a negation
         node_id = f'{p[1]}_{counter}'
         G.add_node(node_id, label=p[1])
         counter += 1
         G.add_edge(node_id, p[2])
         p[0] = node_id
-    elif len(p) == 4:  # estamos mirando a un operador binario
-        operator = p[2]
-        if operator in G.nodes():  # si el operador ya ha sido utilizado antes, reutilizar el nodo
-            node_id = operator
+    elif len(p) == 4:  # we are looking at a binary operator
+        if p[1] == '(' and p[3] == ')':  # Handle expressions like (p AND q) directly
+            p[0] = p[2]
         else:
-            node_id = f'{operator}_{counter}'
-            G.add_node(node_id, label=operator)
-            counter += 1
-        G.add_edge(node_id, p[1])
-        G.add_edge(node_id, p[3])
-        p[0] = node_id
-    else:  # estamos mirando a algo rodeado por paréntesis
+            operator = p[2]
+            if operator in G.nodes():  # if the operator has already been used before, reuse the node
+                node_id = operator
+            else:
+                node_id = f'{operator}_{counter}'
+                G.add_node(node_id, label=operator)
+                counter += 1
+            G.add_edge(node_id, p[1])
+            G.add_edge(node_id, p[3])
+            p[0] = node_id
+    else:  # we are looking at something enclosed by parentheses
         p[0] = p[2]
+
 
 precedence = (
     ('right', 'NOT'),
@@ -112,6 +115,6 @@ def dibujar_grafo(G):
     )
     plt.show()
 
-expresion_logica = '~(p^(qor))=>t'
+expresion_logica = '(~(p^(qor))os)'
 grafo, _ = analizar_expresion(expresion_logica)
 dibujar_grafo(grafo)
