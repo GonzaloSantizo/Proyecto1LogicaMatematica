@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 tokens = ['VARIABLE', 'NOT', 'AND', 'OR', 'IMPLIES', 'IFF', 'LPAREN', 'RPAREN']
 
 # Expresiones regulares para tokens
-t_NOT = r'~+'
+t_NOT = r'~'
 t_AND = r'\^'
 t_OR = r'o'
 t_IMPLIES = r'=>'
@@ -16,7 +16,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
 def t_VARIABLE(t):
-    r'[pqrstuvwxyzb]'
+    r'[0123456789pqrstuvwxyzb]'
     return t
 
 t_ignore = ' \t'
@@ -35,7 +35,8 @@ def p_expression(p):
                   | expression OR expression
                   | expression IMPLIES expression
                   | expression IFF expression
-                  | LPAREN expression RPAREN'''
+                  | LPAREN expression RPAREN
+                  | NOT LPAREN expression RPAREN'''
     global counter
 
     if len(p) == 2:  # si la longitud de p es 2, entonces estamos mirando una variable o una negación
@@ -65,9 +66,6 @@ def p_expression(p):
         p[0] = node_id
     else:  # estamos mirando a algo rodeado por paréntesis
         p[0] = p[2]
-
-
-
 
 precedence = (
     ('right', 'NOT'),
@@ -114,6 +112,6 @@ def dibujar_grafo(G):
     )
     plt.show()
 
-expresion_logica = '~~q'
+expresion_logica = '~(p^(qor))=>t'
 grafo, _ = analizar_expresion(expresion_logica)
 dibujar_grafo(grafo)
