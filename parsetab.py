@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftIFFleftIMPLIESleftORleftANDrightNOTAND IFF IMPLIES LPAREN NOT OR RPAREN VARIABLEexpression : VARIABLE\n                  | NOT expression\n                  | expression AND expression\n                  | expression OR expression\n                  | expression IMPLIES expression\n                  | expression IFF expression\n                  | LPAREN expression RPAREN'
+_lr_signature = 'rightNOTleftIMPLIESIFFleftANDORAND IFF IMPLIES LPAREN NOT OR RPAREN VARIABLEexpression : VARIABLE\n                  | NOT expression\n                  | expression AND expression\n                  | expression OR expression\n                  | expression IMPLIES expression\n                  | expression IFF expression\n                  | LPAREN expression RPAREN'
     
-_lr_action_items = {'VARIABLE':([0,3,4,5,6,7,8,],[2,2,2,2,2,2,2,]),'NOT':([0,3,4,5,6,7,8,],[3,3,3,3,3,3,3,]),'LPAREN':([0,3,4,5,6,7,8,],[4,4,4,4,4,4,4,]),'$end':([1,2,9,11,12,13,14,15,],[0,-1,-2,-3,-4,-5,-6,-7,]),'AND':([1,2,9,10,11,12,13,14,15,],[5,-1,-2,5,-3,5,5,5,-7,]),'OR':([1,2,9,10,11,12,13,14,15,],[6,-1,-2,6,-3,-4,6,6,-7,]),'IMPLIES':([1,2,9,10,11,12,13,14,15,],[7,-1,-2,7,-3,-4,-5,7,-7,]),'IFF':([1,2,9,10,11,12,13,14,15,],[8,-1,-2,8,-3,-4,-5,-6,-7,]),'RPAREN':([2,9,10,11,12,13,14,15,],[-1,-2,15,-3,-4,-5,-6,-7,]),}
+_lr_action_items = {'VARIABLE':([0,3,4,5,6,7,8,],[2,2,2,2,2,2,2,]),'NOT':([0,3,4,5,6,7,8,],[3,3,3,3,3,3,3,]),'LPAREN':([0,3,4,5,6,7,8,],[4,4,4,4,4,4,4,]),'$end':([1,2,9,11,12,13,14,15,],[0,-1,-2,-3,-4,-5,-6,-7,]),'AND':([1,2,9,10,11,12,13,14,15,],[5,-1,5,5,-3,-4,5,5,-7,]),'OR':([1,2,9,10,11,12,13,14,15,],[6,-1,6,6,-3,-4,6,6,-7,]),'IMPLIES':([1,2,9,10,11,12,13,14,15,],[7,-1,7,7,-3,-4,-5,-6,-7,]),'IFF':([1,2,9,10,11,12,13,14,15,],[8,-1,8,8,-3,-4,-5,-6,-7,]),'RPAREN':([2,9,10,11,12,13,14,15,],[-1,-2,15,-3,-4,-5,-6,-7,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -27,11 +27,11 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expression","S'",1,None,None,None),
-  ('expression -> VARIABLE','expression',1,'p_expression','Proyecto1Logica.py',36),
-  ('expression -> NOT expression','expression',2,'p_expression','Proyecto1Logica.py',37),
-  ('expression -> expression AND expression','expression',3,'p_expression','Proyecto1Logica.py',38),
-  ('expression -> expression OR expression','expression',3,'p_expression','Proyecto1Logica.py',39),
-  ('expression -> expression IMPLIES expression','expression',3,'p_expression','Proyecto1Logica.py',40),
-  ('expression -> expression IFF expression','expression',3,'p_expression','Proyecto1Logica.py',41),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression','Proyecto1Logica.py',42),
+  ('expression -> VARIABLE','expression',1,'p_expression','Proyecto1Logica.py',32),
+  ('expression -> NOT expression','expression',2,'p_expression','Proyecto1Logica.py',33),
+  ('expression -> expression AND expression','expression',3,'p_expression','Proyecto1Logica.py',34),
+  ('expression -> expression OR expression','expression',3,'p_expression','Proyecto1Logica.py',35),
+  ('expression -> expression IMPLIES expression','expression',3,'p_expression','Proyecto1Logica.py',36),
+  ('expression -> expression IFF expression','expression',3,'p_expression','Proyecto1Logica.py',37),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression','Proyecto1Logica.py',38),
 ]

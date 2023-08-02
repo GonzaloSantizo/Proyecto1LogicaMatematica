@@ -182,17 +182,17 @@ state 9
     (5) expression -> expression . IMPLIES expression
     (6) expression -> expression . IFF expression
 
-    AND             reduce using rule 2 (expression -> NOT expression .)
-    OR              reduce using rule 2 (expression -> NOT expression .)
-    IMPLIES         reduce using rule 2 (expression -> NOT expression .)
-    IFF             reduce using rule 2 (expression -> NOT expression .)
     $end            reduce using rule 2 (expression -> NOT expression .)
     RPAREN          reduce using rule 2 (expression -> NOT expression .)
+    AND             shift and go to state 5
+    OR              shift and go to state 6
+    IMPLIES         shift and go to state 7
+    IFF             shift and go to state 8
 
-  ! AND             [ shift and go to state 5 ]
-  ! OR              [ shift and go to state 6 ]
-  ! IMPLIES         [ shift and go to state 7 ]
-  ! IFF             [ shift and go to state 8 ]
+  ! AND             [ reduce using rule 2 (expression -> NOT expression .) ]
+  ! OR              [ reduce using rule 2 (expression -> NOT expression .) ]
+  ! IMPLIES         [ reduce using rule 2 (expression -> NOT expression .) ]
+  ! IFF             [ reduce using rule 2 (expression -> NOT expression .) ]
 
 
 state 10
@@ -239,14 +239,14 @@ state 12
     (5) expression -> expression . IMPLIES expression
     (6) expression -> expression . IFF expression
 
+    AND             reduce using rule 4 (expression -> expression OR expression .)
     OR              reduce using rule 4 (expression -> expression OR expression .)
     IMPLIES         reduce using rule 4 (expression -> expression OR expression .)
     IFF             reduce using rule 4 (expression -> expression OR expression .)
     $end            reduce using rule 4 (expression -> expression OR expression .)
     RPAREN          reduce using rule 4 (expression -> expression OR expression .)
-    AND             shift and go to state 5
 
-  ! AND             [ reduce using rule 4 (expression -> expression OR expression .) ]
+  ! AND             [ shift and go to state 5 ]
   ! OR              [ shift and go to state 6 ]
   ! IMPLIES         [ shift and go to state 7 ]
   ! IFF             [ shift and go to state 8 ]
@@ -281,16 +281,16 @@ state 14
     (5) expression -> expression . IMPLIES expression
     (6) expression -> expression . IFF expression
 
+    IMPLIES         reduce using rule 6 (expression -> expression IFF expression .)
     IFF             reduce using rule 6 (expression -> expression IFF expression .)
     $end            reduce using rule 6 (expression -> expression IFF expression .)
     RPAREN          reduce using rule 6 (expression -> expression IFF expression .)
     AND             shift and go to state 5
     OR              shift and go to state 6
-    IMPLIES         shift and go to state 7
 
   ! AND             [ reduce using rule 6 (expression -> expression IFF expression .) ]
   ! OR              [ reduce using rule 6 (expression -> expression IFF expression .) ]
-  ! IMPLIES         [ reduce using rule 6 (expression -> expression IFF expression .) ]
+  ! IMPLIES         [ shift and go to state 7 ]
   ! IFF             [ shift and go to state 8 ]
 
 

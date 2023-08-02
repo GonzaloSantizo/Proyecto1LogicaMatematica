@@ -10,25 +10,21 @@ tokens = ['VARIABLE', 'NOT', 'AND', 'OR', 'IMPLIES', 'IFF', 'LPAREN', 'RPAREN']
 t_NOT = r'~'
 t_AND = r'\^'
 t_OR = r'o'
-t_IMPLIES = r'=>'  # Implicación
-t_IFF = r'<=>'    # Doble implicación
+t_IMPLIES = r'=>'
+t_IFF = r'<=>'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
-# Función para manejar el token VARIABLE
 def t_VARIABLE(t):
-    r'[pqrstuvwxyzb]'
+    r'[0pqrstuvwxyzb]'
     return t
 
-# Ignorar espacios y tabulaciones
 t_ignore = ' \t'
 
-# Función para manejar errores de caracteres no reconocidos
 def t_error(t):
     print(f"Carácter no reconocido: '{t.value[0]}'")
     t.lexer.skip(1)
 
-# Construir el lexer
 lexer = lex.lex()
 
 # Definición de las reglas gramaticales
@@ -40,66 +36,62 @@ def p_expression(p):
                   | expression IMPLIES expression
                   | expression IFF expression
                   | LPAREN expression RPAREN'''
+    global counter
 
-    if len(p) == 2:
-        # For a single variable, add it as a node to the graph
-        if isinstance(p[1], str):
-            G.add_node(p[1], label=p[1])  # Store the operator as the label
+    if len(p) == 2:  # Si la longitud de p es 2, entonces estamos mirando a una variable o una negación
+        if isinstance(p[1], str):  # si es una variable
+            node_id = f'{p[1]}_{counter}'
+            G.add_node(node_id, label=p[1])
+            counter += 1
+            p[0] = node_id
+        else:  # si es una negación
             p[0] = p[1]
+    elif len(p) == 4:  # estamos mirando a un operador binario
+        operator = p[2]
+        if operator in G.nodes():  # si el operador ya ha sido utilizado antes, reutilizar el nodo
+            node_id = operator
         else:
-            p[0] = ""
-    elif len(p) == 3:
-        # For NOT operator, add it as a node to the graph if it's not an empty node
-        if p[1] + p[2]:  # Skip adding empty nodes
-            operator = p[1]  # Get the operator
-            G.add_node(p[1] + p[2], label=operator)  # Store the operator as the label
-            G.add_edge(p[1] + p[2], p[2])  # Connect the operator node to its child
-            p[0] = p[1] + p[2]
-        else:
-            p[0] = ""
-    elif len(p) == 4:
-        # For binary operators, add them as nodes and add edges to the graph if they are not empty nodes
-        if p[1] + p[2] + p[3]:  # Skip adding empty nodes
-            operator = p[2]  # Get the operator
-            G.add_node(p[1] + p[2] + p[3], label=operator)  # Store the operator as the label
-            G.add_edge(p[1] + p[2] + p[3], p[1])  # Connect the operator node to its left child
-            G.add_edge(p[1] + p[2] + p[3], p[3])  # Connect the operator node to its right child
-            p[0] = p[1] + p[2] + p[3]
-        else:
-            p[0] = ""
+            node_id = f'{operator}_{counter}'
+            G.add_node(node_id, label=operator)
+            counter += 1
+        G.add_edge(node_id, p[1])
+        G.add_edge(node_id, p[3])
+        p[0] = node_id
+    else:  # estamos mirando a algo rodeado por paréntesis
+        p[0] = p[2]
 
-# Definición de precedencia y asociatividad de los operadores
+
+
 precedence = (
-    ('left', 'IFF'),
-    ('left', 'IMPLIES'),
-    ('left', 'OR'),
-    ('left', 'AND'),
     ('right', 'NOT'),
+    ('left', 'IMPLIES', 'IFF'),
+    ('left', 'AND', 'OR'),
 )
 
-# Crear el parser
+def yacc_reset():
+    global G, counter
+    G = nx.DiGraph()
+    counter = 0
+
 parser = yacc.yacc()
 
-# Función para analizar una expresión y construir el grafo
 def analizar_expresion(expresion):
-    global G
-    G = nx.DiGraph()  # Reset the graph before parsing a new expression
+    yacc_reset()
     parser.parse(expresion, lexer=lexer)
-    return G
+    return G, counter - 1  # Devolvemos el grafo y el índice del último nodo creado
 
-# Función para dibujar el grafo
 def dibujar_grafo(G):
-    pos = nx.nx_agraph.graphviz_layout(grafo, prog="dot")
-    labels = nx.get_node_attributes(G, 'label')  # Get the labels from the 'label' attribute
-
-    # Extract node labels and set the label to an empty string for nodes without labels
+    pos = nx.nx_agraph.graphviz_layout(G, prog="dot")
+    labels = nx.get_node_attributes(G, 'label')
     node_labels = {node: labels.get(node, '') for node in G.nodes()}
-
-    # Remove isolated nodes
-    G.remove_nodes_from(list(nx.isolates(G)))
+    
+    # Filtramos los nodos que son paréntesis antes de dibujar el grafo
+    nodes_to_draw = [node for node in G.nodes() if node in labels]
+    
+    G_filtered = G.subgraph(nodes_to_draw)  # Creamos un subgrafo con los nodos que se van a dibujar
 
     nx.draw(
-        G,
+        G_filtered,
         pos,
         with_labels=True,
         labels=node_labels,
@@ -113,9 +105,8 @@ def dibujar_grafo(G):
         width=1.5,
         alpha=0.8,
     )
-    plt.show()  # Show the graph without creating an extra figure
+    plt.show()
 
-# Ejemplo de uso
-expresion_logica = '((p=>q)^p)'
-grafo = analizar_expresion(expresion_logica)
+expresion_logica = '(0=>(ros))'
+grafo, _ = analizar_expresion(expresion_logica)
 dibujar_grafo(grafo)
