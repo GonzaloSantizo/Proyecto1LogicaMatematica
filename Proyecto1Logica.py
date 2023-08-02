@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 tokens = ['VARIABLE', 'NOT', 'AND', 'OR', 'IMPLIES', 'IFF', 'LPAREN', 'RPAREN']
 
 # Expresiones regulares para tokens
-t_NOT = r'~'
+t_NOT = r'~+'
 t_AND = r'\^'
 t_OR = r'o'
 t_IMPLIES = r'=>'
@@ -16,7 +16,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
 def t_VARIABLE(t):
-    r'[0pqrstuvwxyzb]'
+    r'[pqrstuvwxyzb]'
     return t
 
 t_ignore = ' \t'
@@ -38,7 +38,7 @@ def p_expression(p):
                   | LPAREN expression RPAREN'''
     global counter
 
-    if len(p) == 2:  # Si la longitud de p es 2, entonces estamos mirando a una variable o una negación
+    if len(p) == 2:  # si la longitud de p es 2, entonces estamos mirando una variable o una negación
         if isinstance(p[1], str):  # si es una variable
             node_id = f'{p[1]}_{counter}'
             G.add_node(node_id, label=p[1])
@@ -46,6 +46,12 @@ def p_expression(p):
             p[0] = node_id
         else:  # si es una negación
             p[0] = p[1]
+    elif len(p) == 3:  # estamos mirando una negación
+        node_id = f'{p[1]}_{counter}'
+        G.add_node(node_id, label=p[1])
+        counter += 1
+        G.add_edge(node_id, p[2])
+        p[0] = node_id
     elif len(p) == 4:  # estamos mirando a un operador binario
         operator = p[2]
         if operator in G.nodes():  # si el operador ya ha sido utilizado antes, reutilizar el nodo
@@ -59,6 +65,7 @@ def p_expression(p):
         p[0] = node_id
     else:  # estamos mirando a algo rodeado por paréntesis
         p[0] = p[2]
+
 
 
 
@@ -107,6 +114,6 @@ def dibujar_grafo(G):
     )
     plt.show()
 
-expresion_logica = '(0=>(ros))'
+expresion_logica = '~~q'
 grafo, _ = analizar_expresion(expresion_logica)
 dibujar_grafo(grafo)
