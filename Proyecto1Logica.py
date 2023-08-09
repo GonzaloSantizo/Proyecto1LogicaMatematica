@@ -26,7 +26,6 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
-
 # Definición de las reglas gramaticales
 def p_expression(p):
     '''expression : VARIABLE
@@ -37,27 +36,28 @@ def p_expression(p):
                   | expression IFF expression
                   | LPAREN expression RPAREN'''
     global counter
+    assign = False
 
-    if len(p) == 2:  # if the length of p is 2, then we are looking at a variable or a negation
-        if isinstance(p[1], str):  # if it is a variable
+    if len(p) == 2:  # Si es dos, entonces p es una (variable preposicional o constante) o una negación
+        if isinstance(p[1], str):  # Si es una variable preposicional o constante
             node_id = f'{p[1]}_{counter}'
             G.add_node(node_id, label=p[1])
             counter += 1
             p[0] = node_id
-        else:  # if it is a negation
+        else:  # Sino es una negación
             p[0] = p[1]
-    elif len(p) == 3:  # we are looking at a negation
+    elif len(p) == 3:  # Si es una negación
         node_id = f'{p[1]}_{counter}'
         G.add_node(node_id, label=p[1])
         counter += 1
         G.add_edge(node_id, p[2])
         p[0] = node_id
-    elif len(p) == 4:  # we are looking at a binary operator
-        if p[1] == '(' and p[3] == ')':  # Handle expressions like (p AND q) directly
+    elif len(p) == 4:  # Si es 4 nos encontramos una operación lógica
+        if p[1] == '(' and p[3] == ')':  # Si la expresión es (p AND q)
             p[0] = p[2]
         else:
             operator = p[2]
-            if operator in G.nodes():  # if the operator has already been used before, reuse the node
+            if operator in G.nodes():  # Si el operador ya ha sido utilizado antes, reusar el nodo
                 node_id = operator
             else:
                 node_id = f'{operator}_{counter}'
@@ -66,7 +66,7 @@ def p_expression(p):
             G.add_edge(node_id, p[1])
             G.add_edge(node_id, p[3])
             p[0] = node_id
-    else:  # we are looking at something enclosed by parentheses
+    else:  # Significa que estamos viendo a algo en paréntesis
         p[0] = p[2]
 
 
@@ -76,7 +76,7 @@ precedence = (
     ('left', 'AND', 'OR'),
 )
 
-def yacc_reset():
+def yacc_reset(): 
     global G, counter
     G = nx.DiGraph()
     counter = 0
@@ -115,6 +115,6 @@ def dibujar_grafo(G):
     )
     plt.show()
 
-expresion_logica = '(~(p^(qor))os)'
+expresion_logica = '((~(p^(qor)))os)'
 grafo, _ = analizar_expresion(expresion_logica)
 dibujar_grafo(grafo)
